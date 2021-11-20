@@ -1,0 +1,36 @@
+Inicializar proyecto
+
+    npm init -y
+
+Instalar express
+
+    npm install express
+
+Instalar cors
+
+    npm install cors
+
+Instalar body-parser
+
+    npm install body-parser
+
+Inicializar el archivo de configuración de Typescript (tsconfig.json)
+
+    tsc --init
+
+Configurar propiedad target en el archivo tsconfig.json
+
+    "target": "es6"
+
+Configurar propiedad outDir en el archivo tsconfig.json
+
+    "outDir": "dist/"
+
+Comando para ejecutar el compilador de Typescript y que esté pendiente de los cambios
+
+    tsc -w
+
+Comando para ejecutar el proyecto de node utilizando la librería de nodemon
+
+    nodemon dist/
+
