@@ -38,3 +38,7 @@ Instalar los tipos de Express
 
     npm i --save-dev @types/express
 
+Instalar los tipos de cors
+
+    npm i --save-dev @types/cors
+
