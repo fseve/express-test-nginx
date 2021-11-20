@@ -1,4 +1,8 @@
+import Server from "./classes/server";
+import { SERVER_PORT } from "./global/environment";
 
-const nombre = 'Express TS'
+const server = new Server();
 
-console.log(`Herramientas ${nombre}`);
+server.start(() => {
+    console.log(`Servidor corriendo en el puerto ${SERVER_PORT}`);
+});

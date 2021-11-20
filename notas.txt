@@ -34,3 +34,7 @@ Comando para ejecutar el proyecto de node utilizando la librería de nodemon
 
     nodemon dist/
 
+Instalar los tipos de Express
+
+    npm i --save-dev @types/express
+
