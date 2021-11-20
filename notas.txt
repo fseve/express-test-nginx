@@ -42,3 +42,12 @@ Instalar los tipos de cors
 
     npm i --save-dev @types/cors
 
+Instalar la librería de Socket.io
+
+    npm install socket.io
+
+Instalar los tipos de Socket.IO
+    Nota: This is a stub types definition.
+        socket.io provides its own type definitions, so you do not need this installed.
+
+    npm install @types/socket.io --save-dev
