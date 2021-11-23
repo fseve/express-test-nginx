@@ -5,14 +5,17 @@ import { GraficaData } from '../classes/grafica';
 
 const router = Router();
 
+// Gráfica de ventas sección 7
 const grafica = new GraficaData();
 
+// Gráfica de ventas sección 7
 router.get('/grafica', (req: Request, res: Response) => {
 
     res.json(grafica.getDataGrafica());
 
 });
 
+// Gráfica de ventas sección 7
 router.post('/grafica', (req: Request, res: Response) => {
 
     const mes = req.body.mes;
