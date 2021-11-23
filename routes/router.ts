@@ -2,16 +2,27 @@ import { Router, Request, Response } from 'express';
 import Server from '../classes/server';
 import { usuariosConectados } from '../sockets/socket';
 import { GraficaData } from '../classes/grafica';
+import { GraficaDataEncuesta } from '../classes/grafica-encuesta';
 
 const router = Router();
 
 // Gráfica de ventas sección 7
 const grafica = new GraficaData();
 
+// Gráfica de encuesta sección 8
+const graficaEncuesta = new GraficaDataEncuesta();
+
 // Gráfica de ventas sección 7
 router.get('/grafica', (req: Request, res: Response) => {
 
     res.json(grafica.getDataGrafica());
+
+});
+
+// Gráfica de encuesta sección 8
+router.get('/grafica/encuesta', (req: Request, res: Response) => {
+
+    res.json(graficaEncuesta.getDataGraficaEncuesta());
 
 });
 
@@ -31,6 +42,21 @@ router.post('/grafica', (req: Request, res: Response) => {
     server.io.emit('cambio-grafica', grafica.getDataGrafica());
 
     res.json(grafica.getDataGrafica());
+
+});
+
+// Gráfica de encuesta sección 8
+router.post('/grafica/encuesta', (req: Request, res: Response) => {
+
+    const pregunta = Number(req.body.pregunta);
+    const valor = Number(req.body.valor);
+
+    graficaEncuesta.incrementarValorPreguntas(pregunta, valor);
+
+    const server = Server.instance;
+    server.io.emit('cambio-grafica-encuesta', graficaEncuesta.getDataGraficaEncuesta());
+
+    res.json(graficaEncuesta.getDataGraficaEncuesta());
 
 });
 
