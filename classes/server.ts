@@ -37,6 +37,11 @@ export default class Server {
             // Configuración de mapas
             socket.mapaSockets(cliente, this.io);
 
+            // Configuración de mapas Google Maps
+            socket.marcadorNuevoGoogleMaps(cliente);
+            socket.marcadorBorrarGoogleMaps(cliente);
+            socket.marcadorMoverGoogleMaps(cliente);
+
             // Login (configurar usuario)
             socket.configurarUsuario(cliente, this.io);
 

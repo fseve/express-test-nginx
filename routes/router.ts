@@ -3,8 +3,39 @@ import Server from '../classes/server';
 import { usuariosConectados, mapa } from '../sockets/socket';
 import { GraficaData } from '../classes/grafica';
 import { GraficaDataEncuesta } from '../classes/grafica-encuesta';
+import { MapaGoogleMaps } from '../classes/mapa-googlemaps';
+import { MarcadorGoogleMaps } from '../classes/marcador-googlemaps';
 
 const router = Router();
+
+// Mapa Google Maps
+export const mapaGoogleMaps = new MapaGoogleMaps();
+const lugares: MarcadorGoogleMaps[] = [
+    {
+        id: '1',
+        nombre: 'Udemy',
+        lat: 37.784679,
+        lng: -122.395936
+    },
+    {
+        id: '2',
+        nombre: 'Bahía de San Francisco',
+        lat: 37.798933,
+        lng: -122.377732
+    },
+    {
+        id: '3',
+        nombre: 'The Palace Hotel',
+        lat: 37.788578,
+        lng: -122.401745
+    }
+];
+mapaGoogleMaps.marcadores.push(...lugares);
+// Get mapasgooglemaps
+router.get('/mapagooglemaps', (req: Request, res: Response) => {
+    res.json(mapaGoogleMaps.getMarcadores());
+});
+
 
 // Mapa
 // const mapa = new Mapa();

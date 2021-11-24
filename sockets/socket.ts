@@ -4,9 +4,34 @@ import { UsuariosLista } from '../classes/usuarios-lista';
 import { Usuario } from '../classes/usuario';
 import { Mapa } from '../classes/mapa';
 import { Marcador } from '../classes/marcador';
+import { MarcadorGoogleMaps } from '../classes/marcador-googlemaps';
+import { mapaGoogleMaps } from '../routes/router';
 
 export const usuariosConectados = new UsuariosLista();
 export const mapa = new Mapa();
+
+// Eventos de mapa de Google Maps
+export const marcadorNuevoGoogleMaps = (cliente: Socket) => {
+    cliente.on('marcador-nuevo-googlemaps', (marcador: MarcadorGoogleMaps) => {
+        mapaGoogleMaps.agregarMarcador(marcador);
+        cliente.broadcast.emit('marcador-nuevo-googlemaps', marcador);
+        // io.emit('marcador-nuevo-googlemaps', marcador);
+    });
+}
+
+export const marcadorBorrarGoogleMaps = (cliente: Socket) => {
+    cliente.on('marcador-borrar-googlemaps', (id: string) => {
+        mapaGoogleMaps.borrarMarcador(id);
+        cliente.broadcast.emit('marcador-borrar-googlemaps', id);
+    });
+}
+
+export const marcadorMoverGoogleMaps = (cliente: Socket) => {
+    cliente.on('marcador-mover-googlemaps', (marcador: MarcadorGoogleMaps) => {
+        mapaGoogleMaps.moverMarcador(marcador);
+        cliente.broadcast.emit('marcador-mover-googlemaps', marcador);
+    });
+}
 
 // Eventos de mapa
 export const mapaSockets = (cliente: Socket, io: socketIO.Server) => {
