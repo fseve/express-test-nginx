@@ -1,10 +1,18 @@
 import { Router, Request, Response } from 'express';
 import Server from '../classes/server';
-import { usuariosConectados } from '../sockets/socket';
+import { usuariosConectados, mapa } from '../sockets/socket';
 import { GraficaData } from '../classes/grafica';
 import { GraficaDataEncuesta } from '../classes/grafica-encuesta';
 
 const router = Router();
+
+// Mapa
+// const mapa = new Mapa();
+
+// Get mapas
+router.get('/mapa', (req: Request, res: Response) => {
+    res.json(mapa.getMarcadores());
+});
 
 // Gráfica de ventas sección 7
 const grafica = new GraficaData();
