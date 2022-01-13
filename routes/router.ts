@@ -11,24 +11,24 @@ const router = Router();
 // Mapa Google Maps
 export const mapaGoogleMaps = new MapaGoogleMaps();
 const lugares: MarcadorGoogleMaps[] = [
-    {
-        id: '1',
-        nombre: 'Udemy',
-        lat: 37.784679,
-        lng: -122.395936
-    },
-    {
-        id: '2',
-        nombre: 'Bahía de San Francisco',
-        lat: 37.798933,
-        lng: -122.377732
-    },
-    {
-        id: '3',
-        nombre: 'The Palace Hotel',
-        lat: 37.788578,
-        lng: -122.401745
-    }
+    // {
+    //     id: '1',
+    //     nombre: 'Udemy',
+    //     lat: 37.784679,
+    //     lng: -122.395936
+    // },
+    // {
+    //     id: '2',
+    //     nombre: 'Bahía de San Francisco',
+    //     lat: 37.798933,
+    //     lng: -122.377732
+    // },
+    // {
+    //     id: '3',
+    //     nombre: 'The Palace Hotel',
+    //     lat: 37.788578,
+    //     lng: -122.401745
+    // }
 ];
 mapaGoogleMaps.marcadores.push(...lugares);
 // Get mapasgooglemaps

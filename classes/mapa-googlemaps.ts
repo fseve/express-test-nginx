@@ -11,7 +11,10 @@ export class MapaGoogleMaps {
     }
 
     agregarMarcador(marcador: MarcadorGoogleMaps) {
-        this.marcadores.push(marcador);
+        const search = this.marcadores.find(x => x.lat === marcador.lat && x.lng === marcador.lng);
+        if (!search) {
+            this.marcadores.push(marcador);
+        }
     }
 
     borrarMarcador(id: string) {

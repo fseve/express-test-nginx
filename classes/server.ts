@@ -38,7 +38,7 @@ export default class Server {
             socket.mapaSockets(cliente, this.io);
 
             // Configuración de mapas Google Maps
-            socket.marcadorNuevoGoogleMaps(cliente);
+            socket.marcadorNuevoGoogleMaps(cliente, this.io);
             socket.marcadorBorrarGoogleMaps(cliente);
             socket.marcadorMoverGoogleMaps(cliente);
 

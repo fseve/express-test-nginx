@@ -9,7 +9,7 @@ export class UsuariosLista {
     // Agregar un usuario
     public agregar(usuario: Usuario) {
         this.lista.push(usuario);
-        console.log(this.lista);
+        // console.log(this.lista);
         return usuario;
     }
 
@@ -21,8 +21,8 @@ export class UsuariosLista {
                 break;
             }
         }
-        console.log('==== Actualizando usuario ====');
-        console.log(this.lista);
+        // console.log('==== Actualizando usuario ====');
+        // console.log(this.lista);
     }
 
     // Obtener lista de usuarios
