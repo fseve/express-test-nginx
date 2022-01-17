@@ -35,12 +35,12 @@ export default class Server {
             socket.conectarCliente(cliente, this.io);
 
             // Configuración de mapas
-            socket.mapaSockets(cliente, this.io);
+            // socket.mapaSockets(cliente, this.io);
 
-            // Configuración de mapas Google Maps
-            socket.marcadorNuevoGoogleMaps(cliente, this.io);
-            socket.marcadorBorrarGoogleMaps(cliente);
-            socket.marcadorMoverGoogleMaps(cliente);
+            // // Configuración de mapas Google Maps
+            // socket.marcadorNuevoGoogleMaps(cliente, this.io);
+            // socket.marcadorBorrarGoogleMaps(cliente);
+            // socket.marcadorMoverGoogleMaps(cliente);
 
             // Login (configurar usuario)
             socket.configurarUsuario(cliente, this.io);
@@ -49,7 +49,7 @@ export default class Server {
             socket.obtenerUsuarios(cliente, this.io);
 
             // Mensajes
-            socket.mensaje(cliente, this.io);
+            // socket.mensaje(cliente, this.io);
 
             // Desconectar
             socket.desconectar(cliente, this.io);
