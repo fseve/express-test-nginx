@@ -12,36 +12,37 @@ import * as redis from 'redis';
 
 // Publisher
 let publisherClient: any;
-(async () => {
-    publisherClient = redis.createClient();
-    // publisherClient.on('error', (err: any) => console.log('Redis Client Error', err));
-    await publisherClient.connect();
-})();
-// Subscriber
 let subscriberClient: any;
 (async () => {
-    subscriberClient = redis.createClient();
-    // subscriberClient.on('error', (err: any) => console.log('Redis Client Error', err));
-    await subscriberClient.connect();
+    publisherClient = redis.createClient({
+        // // url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379'
+        url: 'redis://default:P2Olkc8GkFt9EHGDT5LnmOAlw6WRB5LMYAzCaMoGxGI=@llevaloo-redis.redis.cache.windows.net:6379',
+    });
+    publisherClient.connect().then(() => {
+        console.log('Conectado en publisherClient');
+        subscriberClient = publisherClient.duplicate();
+        subscriberClient.connect().then(() => {
+            console.log('Conectado en subscriberClient');
+            subscriberClient.subscribe('marker-nuevo', (message: any) => {
+                mapaGoogleMaps.agregarMarcador(JSON.parse(message));
+                const servidor = Server;
+                servidor.instance.io.emit('marcador-nuevo-googlemaps', JSON.parse(message));
+            });
+
+            subscriberClient.subscribe('marker-borrar', (message: any) => {
+                mapaGoogleMaps.borrarMarcador(message);
+                const servidor = Server;
+                servidor.instance.io.emit('marcador-borrar-googlemaps', message);
+            });
+
+            subscriberClient.subscribe('marker-mover', (message: any) => {
+                mapaGoogleMaps.moverMarcador(JSON.parse(message));
+                const servidor = Server;
+                servidor.instance.io.emit('marcador-mover-googlemaps', JSON.parse(message));
+            });
+        });
+    });
 })();
-
-subscriberClient.subscribe('marker-nuevo', (message: any) => {
-    mapaGoogleMaps.agregarMarcador(JSON.parse(message));
-    const servidor = Server;
-    servidor.instance.io.emit('marcador-nuevo-googlemaps', JSON.parse(message));
-});
-
-subscriberClient.subscribe('marker-borrar', (message: any) => {
-    mapaGoogleMaps.borrarMarcador(message);
-    const servidor = Server;
-    servidor.instance.io.emit('marcador-borrar-googlemaps', message);
-});
-
-subscriberClient.subscribe('marker-mover', (message: any) => {
-    mapaGoogleMaps.moverMarcador(JSON.parse(message));
-    const servidor = Server;
-    servidor.instance.io.emit('marcador-mover-googlemaps', JSON.parse(message));
-});
 
 export const usuariosConectados = new UsuariosLista();
 export const mapa = new Mapa();

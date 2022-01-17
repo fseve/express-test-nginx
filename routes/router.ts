@@ -172,4 +172,13 @@ router.get('/usuarios/detalle', (req: Request, res: Response) => {
 
 });
 
+router.get('/', (req: Request, res: Response) => {
+
+    res.json({
+        ok: true,
+        mensaje: 'Hola Mundo de Azure MV'
+    });
+
+});
+
 export default router;
