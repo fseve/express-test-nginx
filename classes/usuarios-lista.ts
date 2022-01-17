@@ -14,10 +14,12 @@ export class UsuariosLista {
     }
 
     // Actualizar nombre de usuario
-    public actualizarNombre(id: string, nombre: string) {
+    public actualizarNombre(id: string, nombre: string, lat: number, lng: number) {
         for (let usuario of this.lista) {
             if (usuario.id === id) {
                 usuario.nombre = nombre;
+                usuario.lat = lat;
+                usuario.lng = lng;
                 break;
             }
         }

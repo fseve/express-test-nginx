@@ -139,9 +139,9 @@ export const mensaje = (cliente: Socket, io: socketIO.Server) => {
 
 // Escuchar login (configurar-usuario)
 export const configurarUsuario = (cliente: Socket, io: socketIO.Server) => {
-    cliente.on('configurar-usuario', (payload: { nombre: string }, callback: Function) => {
+    cliente.on('configurar-usuario', (payload: { nombre: string, lat: number, lng: number }, callback: Function) => {
         // console.log('Configurando usuario: ', payload.nombre);
-        usuariosConectados.actualizarNombre(cliente.id, payload.nombre);
+        usuariosConectados.actualizarNombre(cliente.id, payload.nombre, payload.lat, payload.lng);
         io.emit('usuarios-activos', usuariosConectados.getLista());
         callback({
             ok: true,
