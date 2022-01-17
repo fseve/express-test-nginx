@@ -13,20 +13,24 @@ import * as redis from 'redis';
 // Publisher
 let publisherClient: any;
 let subscriberClient: any;
+let redisController: any;
 (async () => {
     publisherClient = redis.createClient({
         // // url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379'
-        url: 'redis://default:P2Olkc8GkFt9EHGDT5LnmOAlw6WRB5LMYAzCaMoGxGI=@llevaloo-redis.redis.cache.windows.net:6379',
+        url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
     });
     publisherClient.connect().then(() => {
         console.log('Conectado en publisherClient');
         subscriberClient = publisherClient.duplicate();
         subscriberClient.connect().then(() => {
             console.log('Conectado en subscriberClient');
-            subscriberClient.subscribe('marker-nuevo', (message: any) => {
+            subscriberClient.subscribe('marker-nuevo', async (message: any) => {
                 mapaGoogleMaps.agregarMarcador(JSON.parse(message));
                 const servidor = Server;
                 servidor.instance.io.emit('marcador-nuevo-googlemaps', JSON.parse(message));
+
+                await redisController.set('marcadores', JSON.stringify(mapaGoogleMaps.getMarcadores()));
+
             });
 
             subscriberClient.subscribe('marker-borrar', (message: any) => {
@@ -42,6 +46,16 @@ let subscriberClient: any;
             });
         });
     });
+
+    // RedisController
+
+    redisController = redis.createClient({
+        url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
+    });
+    redisController.connect().then(() => {
+        console.log('conectado en redisController');
+    });
+
 })();
 
 export const usuariosConectados = new UsuariosLista();
@@ -49,11 +63,12 @@ export const mapa = new Mapa();
 
 // Eventos de mapa de Google Maps
 export const marcadorNuevoGoogleMaps = (cliente: Socket, io: socketIO.Server) => {
-    cliente.on('marcador-nuevo-googlemaps', (marcador: MarcadorGoogleMaps) => {
+    cliente.on('marcador-nuevo-googlemaps', async (marcador: MarcadorGoogleMaps) => {
 
         // REDIS
         console.log('marcadorNuevo redis');
         publisherClient.publish('marker-nuevo', JSON.stringify(marcador));
+        // Guardar nuevo marcador en redis
         // REDIS
 
         // mapaGoogleMaps.agregarMarcador(marcador);
