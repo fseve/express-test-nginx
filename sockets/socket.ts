@@ -33,10 +33,13 @@ let redisController: any;
 
             });
 
-            subscriberClient.subscribe('marker-borrar', (message: any) => {
+            subscriberClient.subscribe('marker-borrar', async (message: any) => {
                 mapaGoogleMaps.borrarMarcador(message);
                 const servidor = Server;
                 servidor.instance.io.emit('marcador-borrar-googlemaps', message);
+
+                await redisController.set('marcadores', JSON.stringify(mapaGoogleMaps.getMarcadores()));
+
             });
 
             subscriberClient.subscribe('marker-mover', (message: any) => {
