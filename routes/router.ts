@@ -152,7 +152,8 @@ router.get('/usuarios', (req: Request, res: Response) => {
     server.io.allSockets().then((clientes) => {
         res.json({
             ok: true,
-            clientes: Array.from(clientes)
+            clientes: Array.from(clientes),
+            usuariosConectados: usuariosConectados.getLista()
         });
     }).catch((err) => {
         res.json({
