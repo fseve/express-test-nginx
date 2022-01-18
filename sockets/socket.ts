@@ -190,8 +190,8 @@ export const obtenerUsuarios = (cliente: Socket, io: socketIO.Server) => {
     cliente.on('obtener-usuarios', async () => {
         // Devolver el listado de usuarios al usuario que lo solicita
         // io.in(cliente.id).emit('usuarios-activos', usuariosConectados.getLista());
-        io.to(cliente.id).emit('usuarios-activos', await usuariosConectados.getLista());
+        // io.to(cliente.id).emit('usuarios-activos', await usuariosConectados.getLista());
         // Devolver el listado de usuarios a todo el mundo
-        // io.emit('usuarios-activos', usuariosConectados.getLista());
+        io.emit('usuarios-activos', await usuariosConectados.getLista());
     });
 }
