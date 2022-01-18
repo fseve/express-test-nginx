@@ -10,40 +10,46 @@ export const usuariosConectados = new UsuariosLista();
 
 let publisherClient: any;
 let subscriberClient: any;
-(async () => {
+try {
+    (async () => {
 
-    console.log('Hola mundo cruel de Redis');
+        console.log('Hola mundo cruel de Redis');
 
-    publisherClient = redis.createClient({
-        url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
-    });
+        publisherClient = redis.createClient({
+            url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
+        });
 
-    publisherClient.on('error', (err: any) => console.log('Error en publisherClient', err));
+        publisherClient.on('error', (err: any) => console.log('Error en publisherClient', err));
 
-    publisherClient.connect().then(() => {
-        console.log('Conectado en publisherClient');
-        subscriberClient = publisherClient.duplicate();
-        subscriberClient.on('error', (err: any) => console.log('Error en subscriberClient', err));
-        subscriberClient.connect().then(() => {
-            console.log('Conectado en subscriberClient');
-            subscriberClient.subscribe('usuario-nuevo', async (usuarios: any) => {
+        publisherClient.connect().then(() => {
+            console.log('Conectado en publisherClient');
+            subscriberClient = publisherClient.duplicate();
+            subscriberClient.on('error', (err: any) => console.log('Error en subscriberClient', err));
+            subscriberClient.connect().then(() => {
+                console.log('Conectado en subscriberClient');
+                subscriberClient.subscribe('usuario-nuevo', async (usuarios: any) => {
 
-                Server.instance.io.emit('usuarios-activos', JSON.parse(usuarios));
+                    Server.instance.io.emit('usuarios-activos', JSON.parse(usuarios));
 
-            });
+                });
 
-            subscriberClient.subscribe('marker-borrar', async (message: any) => {
+                subscriberClient.subscribe('marker-borrar', async (message: any) => {
 
 
-            });
+                });
 
-            subscriberClient.subscribe('usuario-mover', (usuario: any) => {
-                Server.instance.io.emit('usuario-mover', JSON.parse(usuario));
+                subscriberClient.subscribe('usuario-mover', (usuario: any) => {
+                    Server.instance.io.emit('usuario-mover', JSON.parse(usuario));
+                });
             });
         });
-    });
 
-})();
+    })();
+} catch (error) {
+    console.log('error en try1', error);
+    console.log(error);
+    console.log(JSON.stringify(error));
+}
 
 export const conectarCliente = async (cliente: Socket, io: socketIO.Server) => {
     console.log('Cliente conectado: ', cliente.id);
