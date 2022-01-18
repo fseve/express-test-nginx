@@ -11,12 +11,19 @@ export const usuariosConectados = new UsuariosLista();
 let publisherClient: any;
 let subscriberClient: any;
 (async () => {
+
+    console.log('Hola mundo cruel de Redis');
+
     publisherClient = redis.createClient({
         url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
     });
+
+    publisherClient.on('error', (err: any) => console.log('Error en publisherClient', err));
+
     publisherClient.connect().then(() => {
         console.log('Conectado en publisherClient');
         subscriberClient = publisherClient.duplicate();
+        subscriberClient.on('error', (err: any) => console.log('Error en subscriberClient', err));
         subscriberClient.connect().then(() => {
             console.log('Conectado en subscriberClient');
             subscriberClient.subscribe('usuario-nuevo', async (usuarios: any) => {
