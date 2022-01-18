@@ -1,5 +1,4 @@
 import { Usuario } from './usuario';
-
 import * as redis from 'redis';
 
 export class UsuariosLista {
@@ -8,7 +7,6 @@ export class UsuariosLista {
 
     constructor() {
         // RedisController
-
         this.redisController = redis.createClient({
             url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
         });
@@ -19,13 +17,10 @@ export class UsuariosLista {
 
     // Agregar un usuario
     public async agregar(usuario: Usuario) {
-
         const usuarios = await this.getLista();
-
         usuarios.push({
             ...usuario
         });
-
         await this.redisController.set('usuarios', JSON.stringify(usuarios));
     }
 
@@ -48,7 +43,6 @@ export class UsuariosLista {
     public async getLista(): Promise<Usuario[]> {
         let usuarios = await this.redisController.get('usuarios');
         usuarios = JSON.parse(usuarios);
-
         if (usuarios !== null) {
             return usuarios;
         }
@@ -58,16 +52,21 @@ export class UsuariosLista {
     // Borrar un usuario (Desconexión de una lista)
     public async borrarUsuario(id: string) {
         const lista = await this.getLista();
-        console.log('antes de borrar: ', lista);
-
         const listaTemp = lista.filter(x => x.id !== id);
-
-        console.log('despues de borrar: ', listaTemp);
         await this.redisController.set('usuarios', JSON.stringify(listaTemp));
         return listaTemp;
     }
 
-    public actualizarUbicacion(user: { id: string, lat: number, lng: number}) {
+    public async actualizarUbicacion(id: string, lat: number, lng: number) {
+        const lista = await this.getLista();
+        for (let usuario of lista) {
+            if (usuario.id === id) {
+                usuario.lat = lat;
+                usuario.lng = lng;
+                break;
+            }
+        }
+        await this.redisController.set('usuarios', JSON.stringify(lista));
     }
 
 }
