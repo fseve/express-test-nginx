@@ -3,7 +3,7 @@ import socketIO from 'socket.io';
 import { UsuariosLista } from '../classes/usuarios-lista';
 import { Usuario } from '../classes/usuario';
 
-import Server from '../classes/server';
+// import Server from '../classes/server';
 import * as redis from 'redis';
 
 export const usuariosConectados = new UsuariosLista();
@@ -12,7 +12,7 @@ export const usuariosConectados = new UsuariosLista();
 // Publisher
 let publisherClient: any;
 let subscriberClient: any;
-let redisController: any;
+// let redisController: any;
 (async () => {
     publisherClient = redis.createClient({
         // // url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379'
@@ -39,14 +39,14 @@ let redisController: any;
         });
     });
 
-    // RedisController
+    // // RedisController
 
-    redisController = redis.createClient({
-        url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
-    });
-    redisController.connect().then(() => {
-        console.log('conectado en redisController');
-    });
+    // redisController = redis.createClient({
+    //     url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
+    // });
+    // redisController.connect().then(() => {
+    //     console.log('conectado en redisController');
+    // });
 
 })();
 
@@ -120,52 +120,77 @@ let redisController: any;
 // }
 
 
-export const conectarCliente = (cliente: Socket, io: socketIO.Server) => {
+export const conectarCliente = async (cliente: Socket, io: socketIO.Server) => {
     console.log('Cliente conectado: ', cliente.id);
-    // console.log('Datos: ', cliente);
-    const usuario = new Usuario(cliente.id);
-    usuariosConectados.agregar(usuario);
 }
 
 export const desconectar = (cliente: Socket, io: socketIO.Server) => {
-    cliente.on('disconnect', () => {
+    cliente.on('disconnect', async () => {
         console.log('Cliente desconectado: ', cliente.id);
-        usuariosConectados.borrarUsuario(cliente.id);
-        io.emit('usuarios-activos', usuariosConectados.getLista());
+        await usuariosConectados.borrarUsuario(cliente.id);
+        io.emit('usuarios-activos', await usuariosConectados.getLista());
     });
 }
 
-// Escuchar mensajes
-// export const mensaje = (cliente: Socket, io: socketIO.Server) => {
-//     cliente.on('mensaje', (payload: { de: string, cuerpo: string }) => {
-//         console.log('Mensaje recibido: ', payload);
-//         io.emit('mensaje-nuevo', payload);
-//     });
-// }
 
 // Escuchar login (configurar-usuario)
-export const configurarUsuario = (cliente: Socket, io: socketIO.Server) => {
+export const configurarUsuario = async (cliente: Socket, io: socketIO.Server) => {
+
+    cliente.on('login-usuario',  async (payload: {}, callback: Function) => {
+
+        const usuario = new Usuario(cliente.id);
+        await usuariosConectados.agregar(usuario);
+
+        const usuarios = await usuariosConectados.getLista();
+        io.emit('usuarios-activos', usuarios);
+
+        callback({
+            ok: true,
+            mensaje: `Usuario configurado`,
+        });
+
+    });
+
     cliente.on('configurar-usuario', async (payload: { nombre: string, lat: number, lng: number }, callback: Function) => {
-        // console.log('Configurando usuario: ', payload);
-        usuariosConectados.actualizarNombre(cliente.id, payload.nombre, payload.lat, payload.lng);
+        await usuariosConectados.actualizarNombre(cliente.id, payload.nombre, payload.lat, payload.lng);
+        const usuarios = await usuariosConectados.getLista();
+        io.emit('usuarios-activos', usuarios);
 
-        await redisController.set('usuarios', JSON.stringify(usuariosConectados.getLista()));
-
-        io.emit('usuarios-activos', usuariosConectados.getLista());
         callback({
             ok: true,
             mensaje: `Usuario ${payload.nombre} configurado`,
             server: (cliente as any).server.httpServer._connectionKey
         });
     });
+
+    cliente.on('actualizar-ubicacion', async (user: { id: string, lat: number,  lng: number,}) => {
+        usuariosConectados.actualizarUbicacion(user);
+        // await redisController.set('usuarios', JSON.stringify(usuariosConectados.getLista()));
+        cliente.broadcast.emit('actualizar-ubicacion', user);
+    });
+
+    cliente.on('desconfigurar-usuario', async (payload: {}, callback: Function) => {
+
+        await usuariosConectados.borrarUsuario(cliente.id);
+        const usuarios = await usuariosConectados.getLista();
+        console.log('emitiendo cerrar sesion', usuarios);
+        io.emit('usuarios-activos', usuarios);
+
+        callback({
+            ok: true,
+            mensaje: 'El usuario ha cerrado sesión'
+        });
+
+    });
+
 }
 
 // Obtener usuarios
 export const obtenerUsuarios = (cliente: Socket, io: socketIO.Server) => {
-    cliente.on('obtener-usuarios', () => {
+    cliente.on('obtener-usuarios', async () => {
         // Devolver el listado de usuarios al usuario que lo solicita
         // io.in(cliente.id).emit('usuarios-activos', usuariosConectados.getLista());
-        io.to(cliente.id).emit('usuarios-activos', usuariosConectados.getLista());
+        io.to(cliente.id).emit('usuarios-activos', await usuariosConectados.getLista());
         // Devolver el listado de usuarios a todo el mundo
         // io.emit('usuarios-activos', usuariosConectados.getLista());
     });

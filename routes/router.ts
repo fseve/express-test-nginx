@@ -10,11 +10,11 @@ const router = Router();
 router.get('/usuarios', (req: Request, res: Response) => {
     const server = Server.instance;
 
-    server.io.allSockets().then((clientes) => {
+    server.io.allSockets().then(async (clientes) => {
         res.json({
             ok: true,
             usuariosSockets: Array.from(clientes),
-            usuariosConectados: usuariosConectados.getLista()
+            usuariosConectados: await usuariosConectados.getLista()
         });
     }).catch((err) => {
         res.json({
@@ -38,8 +38,8 @@ router.get('/', (req: Request, res: Response) => {
             console.log('conectado en redisController');
         });
 
-        await redisController.set('marcadores', '');
-        await redisController.set('usuarios', '');
+        await redisController.del('marcadores');
+        await redisController.del('usuarios');
 
     })();
 
