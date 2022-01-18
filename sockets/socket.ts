@@ -136,7 +136,7 @@ export const desconectar = (cliente: Socket, io: socketIO.Server) => {
 // Escuchar login (configurar-usuario)
 export const configurarUsuario = async (cliente: Socket, io: socketIO.Server) => {
 
-    cliente.on('login-usuario',  async (payload: {}, callback: Function) => {
+    cliente.on('login-usuario',  async () => {
 
         const usuario = new Usuario(cliente.id);
         await usuariosConectados.agregar(usuario);
@@ -144,10 +144,10 @@ export const configurarUsuario = async (cliente: Socket, io: socketIO.Server) =>
         const usuarios = await usuariosConectados.getLista();
         io.emit('usuarios-activos', usuarios);
 
-        callback({
-            ok: true,
-            mensaje: `Usuario configurado`,
-        });
+        // callback({
+        //     ok: true,
+        //     mensaje: `Usuario configurado`,
+        // });
 
     });
 
