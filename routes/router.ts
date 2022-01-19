@@ -36,6 +36,9 @@ router.get('/', (req: Request, res: Response) => {
                 url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
             }
         );
+
+        redisController.on('error', (err: any) => console.log('Error en router.ts', err));
+
         redisController.connect().then(() => {
             console.log('conectado en redisController');
         });
