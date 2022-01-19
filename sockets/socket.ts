@@ -15,9 +15,11 @@ try {
 
         console.log('Hola mundo cruel de Redis');
 
-        publisherClient = redis.createClient({
-            url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
-        });
+        publisherClient = redis.createClient(
+            {
+                url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
+            }
+        );
 
         publisherClient.on('error', (err: any) => console.log('Error en publisherClient', err));
 

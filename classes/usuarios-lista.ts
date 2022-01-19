@@ -8,9 +8,11 @@ export class UsuariosLista {
     constructor() {
         try {
             // RedisController
-            this.redisController = redis.createClient({
-                url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
-            });
+            this.redisController = redis.createClient(
+                {
+                    url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
+                }
+            );
             this.redisController.on('error', (err: any) => console.log('Error en redisController', err));
             this.redisController.connect().then(() => {
                 console.log('conectado en redisController');

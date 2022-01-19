@@ -31,9 +31,11 @@ router.get('/', (req: Request, res: Response) => {
     (async () => {
         // RedisController
 
-        redisController = redis.createClient({
-            url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
-        });
+        redisController = redis.createClient(
+            {
+                url: 'redis://default:8JkzNfVsbOWiPQ1QeqARhlGztUFGzXO8iAzCaB3M6Es=@llevaloo-redi.redis.cache.windows.net:6379',
+            }
+        );
         redisController.connect().then(() => {
             console.log('conectado en redisController');
         });
